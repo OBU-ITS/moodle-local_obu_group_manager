@@ -69,11 +69,11 @@ function local_obu_group_manager_create_system_group($courseorid,
 function local_obu_group_manager_link_system_grouping($group) : bool {
     global $DB;
 
-    if (!($grouping = $DB->get_record('groupings_groups', ['courseid'=>$group->courseId, 'idnumber'=>SYSTEM_IDENTIFIER]))) {
+    if (!($grouping = $DB->get_record('groupings', ['courseid'=>$group->courseId, 'idnumber'=>SYSTEM_IDENTIFIER]))) {
 
         $grouping = new stdClass();
         $grouping->name = get_string('groupingname', 'local_obu_group_manager');
-        $grouping->courseid = $group->courseId;
+        $grouping->courseid = $group->courseid;
         $grouping->idnumber = SYSTEM_IDENTIFIER;
 
         $grouping->id = groups_create_grouping($grouping);
