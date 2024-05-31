@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 const SYSTEM_IDENTIFIER = 'obuSys';
 
-function local_obu_group_manager_get_system_name(string $courseshortname, string $semester = null, string $set = null) : bool
+function local_obu_group_manager_get_system_name(string $courseshortname, string $semester = null, string $set = null) : string
 {
     $suffix = "";
     if(isset($semester)) {
@@ -43,7 +43,7 @@ function local_obu_group_manager_get_system_name(string $courseshortname, string
     return $courseshortname . $suffix;
 }
 
-function local_obu_group_manager_get_system_idnumber(string $courseidnumber, string $semester = null, string $set = null) : bool
+function local_obu_group_manager_get_system_idnumber(string $courseidnumber, string $semester = null, string $set = null) : string
 {
     $suffix = "";
     if(isset($semester)) {
@@ -54,24 +54,5 @@ function local_obu_group_manager_get_system_idnumber(string $courseidnumber, str
         $suffix .= ".$set";
     }
 
-    return SYSTEM_IDENTIFIER . $courseidnumber . $suffix;
-}
-
-function local_obu_group_manager_link_system_grouping($group) : bool {
-    global $DB;
-
-    if (!($grouping = $DB->get_record('groupings_groups', ['courseid'=>$group->courseId, 'idnumber'=>SYSTEM_IDENTIFIER]))) {
-
-        $grouping = new stdClass();
-        $grouping->name = get_string('groupingname', 'local_obu_group_manager');
-        $grouping->courseid = $group->courseId;
-        $grouping->idnumber = SYSTEM_IDENTIFIER;
-
-        $grouping->id = groups_create_grouping($grouping);
-
-    }
-
-    groups_assign_grouping($grouping->id, $group->id);
-
-    return true;
+    return SYSTEM_IDENTIFIER . ".$courseidnumber" . $suffix;
 }

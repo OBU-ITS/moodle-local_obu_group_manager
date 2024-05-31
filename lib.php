@@ -33,7 +33,7 @@ require_once($CFG->dirroot.'/group/lib.php');
 require_once($CFG->dirroot.'/local/obu_group_manager/locallib.php');
 
 
-function local_obu_group_manager_create_system_group(object $course,
+function local_obu_group_manager_create_system_group($courseorid,
                                                      string $name = null,
                                                      string $idnumber = null,
                                                      string $semester = null,
@@ -43,6 +43,8 @@ function local_obu_group_manager_create_system_group(object $course,
     if((isset($semester) || isset($set)) && !(isset($semester) && isset($set))) {
         throw new coding_exception("Both semester and set are required when provided.");
     }
+
+    $course = is_object($courseorid) ? $courseorid : get_course($courseorid);
 
     $idnumber = $idnumber ?? local_obu_group_manager_get_system_idnumber($course->idnumber, $semester, $set);
 
@@ -62,4 +64,23 @@ function local_obu_group_manager_create_system_group(object $course,
     }
 
     return $group;
+}
+
+function local_obu_group_manager_link_system_grouping($group) : bool {
+    global $DB;
+
+    if (!($grouping = $DB->get_record('groupings_groups', ['courseid'=>$group->courseId, 'idnumber'=>SYSTEM_IDENTIFIER]))) {
+
+        $grouping = new stdClass();
+        $grouping->name = get_string('groupingname', 'local_obu_group_manager');
+        $grouping->courseid = $group->courseId;
+        $grouping->idnumber = SYSTEM_IDENTIFIER;
+
+        $grouping->id = groups_create_grouping($grouping);
+
+    }
+
+    groups_assign_grouping($grouping->id, $group->id);
+
+    return true;
 }
