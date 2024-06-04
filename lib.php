@@ -52,15 +52,9 @@ function local_obu_group_manager_create_system_group($courseorid,
         $group->courseid = $course->id;
         $group->name = $name ?? local_obu_group_manager_get_system_name($course->shortname, $semester, $set);
         $group->idnumber = $idnumber;
+        $group->id = groups_create_group($group);
 
-        try {
-            $group->id = groups_create_group($group);
-
-            local_obu_group_manager_link_system_grouping($group);
-        }
-        catch (moodle_exception $e) {
-            return null;
-        }
+        local_obu_group_manager_link_system_grouping($group);
     }
 
     return $group;
