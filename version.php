@@ -27,7 +27,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_obu_group_manager';
-$plugin->version = 2024053100;
+$plugin->version = 2024060401;
 $plugin->requires = 2015111604;
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->release = 'v1.0.0';

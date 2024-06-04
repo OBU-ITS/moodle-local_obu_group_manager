@@ -84,3 +84,7 @@ function local_obu_group_manager_link_system_grouping($group) : bool {
 
     return true;
 }
+
+function local_obu_group_manager_is_system_group($idnumber) : bool {
+    return substr( $idnumber, 0, 6 ) === SYSTEM_IDENTIFIER;
+}
