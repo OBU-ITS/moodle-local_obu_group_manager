@@ -29,18 +29,11 @@ defined('MOODLE_INTERNAL') || die();
 
 const SYSTEM_IDENTIFIER = 'obuSys';
 
-function local_obu_group_manager_get_system_name(string $courseshortname, string $semester = null, string $set = null) : string
+function local_obu_group_manager_get_system_name(string $semester = null, string $set = null) : string
 {
-    $suffix = "";
-    if(isset($semester)) {
-        $suffix .= " - $semester";
-    }
+    if(!isset($semester) || !isset($set)) return "";
 
-    if(isset($set)) {
-        $suffix .= " - $set";
-    }
-
-    return $courseshortname . $suffix;
+    return "$semester - $set";
 }
 
 function local_obu_group_manager_get_system_idnumber(string $courseidnumber, string $semester = null, string $set = null) : string
@@ -55,4 +48,15 @@ function local_obu_group_manager_get_system_idnumber(string $courseidnumber, str
     }
 
     return SYSTEM_IDENTIFIER . ".$courseidnumber" . $suffix;
+}
+
+function local_obu_group_manager_apply_prefix($course, $name) : string {
+    $prefix = get_config('local_obu_group_manager', 'obusys_group_name_prefix');
+
+    $fullname = $prefix . $course->shortname;
+    if(!empty($name)) {
+        $fullname .= " - $name";
+    }
+
+    return $fullname;
 }

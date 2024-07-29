@@ -35,4 +35,5 @@ $string['groupingname'] = 'OBU System';
 $string['obusysgroupdescname'] = 'System Group - Description';
 $string['obusysgroupdescdesc'] = 'Text to be given as the enrolment group description for system generated groups.';
 
-
+$string['groupnameprefix'] = 'System Group - Display name prefix';
+$string['groupnameprefixdesc'] = '';

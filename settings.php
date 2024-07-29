@@ -28,5 +28,14 @@ defined('MOODLE_INTERNAL') || die;
 if ($hassiteconfig) {
     $settings = new admin_settingpage(get_string('pluginname', 'local_obu_group_manager'), get_string('plugintitle', 'local_obu_group_manager'));
     $ADMIN->add('localplugins', $settings);
-    $settings->add(new admin_setting_configtextarea('local_obu_group_manager/obusys_group_desc', get_string('obusysgroupdescname', 'local_obu_group_manager'), get_string('obusysgroupdescdesc', 'local_obu_group_manager'), ''));
+    $settings->add(new admin_setting_configtextarea(
+        'local_obu_group_manager/obusys_group_desc',
+        get_string('obusysgroupdescname', 'local_obu_group_manager'),
+        get_string('obusysgroupdescdesc', 'local_obu_group_manager'),
+        ''));
+    $settings->add(new admin_setting_configtext(
+        'local_obu_group_manager/obusys_group_name_prefix',
+        get_string('groupnameprefix', 'local_obu_group_manager'),
+        get_string('groupnameprefixdesc', 'local_obu_group_manager'),
+        '&#9888; (DO NOT EDIT) '));
 }

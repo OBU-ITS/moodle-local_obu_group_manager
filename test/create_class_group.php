@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Example URL : /local/obu_group_manager/test/create_class_group.php?courseid=7
+ * Example URL : /local/obu_group_manager/test/create_class_group.php?courseid=3
  */
 require('../../../config.php');
 
