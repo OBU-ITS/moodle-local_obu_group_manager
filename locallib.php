@@ -80,12 +80,12 @@ function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid
 function local_obu_group_manager_get_srs_courses($courseendafter) {
     global $DB;
 
-    $sql = "SELECT DISTINCT course.id
-            FROM {course} course course
-            JOIN {course_categories} cat ON cat.id = course.category AND cat.idnumber LIKE 'SRS%'
-            WHERE course.shortname LIKE '% (%:%)'
-                AND course.idnumber LIKE '%.%'
-                AND course.enddate > ?";
+    $sql = "SELECT DISTINCT c.id
+            FROM {course} c
+            JOIN {course_categories} cat ON cat.id = c.category AND cat.idnumber LIKE 'SRS%'
+            WHERE c.shortname LIKE '% (%:%)'
+                AND c.idnumber LIKE '%.%'
+                AND c.enddate > ?";
 
     $courseidobjs = $DB->get_records_sql($sql, array($courseendafter));
 
