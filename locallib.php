@@ -57,7 +57,7 @@ function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid
         foreach ($parentcurrentenrolments as $user) {
             groups_remove_member($parentgroupall, $user);
         }
-        $parentdatabaseenrolments = local_obu_metalinking_get_all_database_enrolled_students($courseid);
+        $parentdatabaseenrolments = local_obu_group_manager_get_all_database_enrolled_students($courseid);
         foreach ($parentdatabaseenrolments as $user) {
             groups_add_member($parentgroupall->id, $user->id, 'local_obu_group_manager');
         }
@@ -69,7 +69,7 @@ function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid
             foreach ($childcurrentenrolments as $user) {
                 groups_remove_member($childgroupall, $user);
             }
-            $childdatabaseenrolments = local_obu_metalinking_get_all_database_enrolled_students($childid);
+            $childdatabaseenrolments = local_obu_group_manager_get_all_database_enrolled_students($childid);
             foreach ($childdatabaseenrolments as $user) {
                 groups_add_member($childgroupall->id, $user->id, 'local_obu_group_manager');
             }
@@ -135,4 +135,21 @@ function local_obu_group_manager_get_all_group($courseid) {
     }
 
     return $group;
+}
+
+function local_obu_group_manager_get_all_database_enrolled_students($courseid) : array {
+    global $DB;
+
+    $sql = "SELECT DISTINCT u.*
+            FROM {enrol} e 
+            JOIN {user_enrolments} ue ON e.id = ue.enrolid
+            JOIN {user} u ON u.id = ue.userid
+            JOIN {role_assignments} ra ON ra.userid = ue.userid
+            JOIN {context} c on c.id = ra.contextid AND c.instanceid = e.courseid
+            WHERE c.contextlevel = 50 
+                AND e.enrol = 'database' 
+                AND ra.roleid = 5
+                AND e.courseid = ?";
+
+    return $DB->get_records_sql($sql, [$courseid]);
 }
