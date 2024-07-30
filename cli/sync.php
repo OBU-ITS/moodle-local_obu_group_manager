@@ -79,7 +79,7 @@ $endafter = empty($options['endafter'])
     ? time()
     : (int)$options['endafter'];
 
-local_obu_group_manager_all_group_sync($trace, $options['course'], $options['endafter']);
+local_obu_group_manager_all_group_sync($trace, $options['course'], $endafter);
 $trace->finished();
 
 exit(0);

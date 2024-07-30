@@ -42,7 +42,6 @@ const SYSTEM_IDENTIFIER = 'obuSys';
  * @return void
  */
 function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid = null, $courseendafter = 0) {
-    
     if ($courseid !== null) {
         $courseids = [$courseid];
     } else {
