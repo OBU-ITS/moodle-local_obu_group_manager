@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,18 +15,40 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info
+ * Event observers
  *
  * @package    local_obu_group_manager
- * @author     Joe Souch
- * @copyright  2024, Oxford Brookes University {@link http://www.brookes.ac.uk/}
+ * @copyright  2024 Joe Souch
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_obu_group_manager';
-$plugin->version = 2024072902;
-$plugin->requires = 2015111604;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->release = 'v1.1.0';
+global $CFG, $DB;
+
+class local_obu_group_manager_observer {
+
+    /**
+     * User enrolment created
+     *
+     * @param \core\event\user_enrolment_created $event
+     * @return bool
+     */
+    public static function user_enrolment_created(\core\event\user_enrolment_created $event) {
+        $enabled = get_config('local_obu_group_manager', 'enableevents');
+        if(!$enabled) {
+            return false;
+        }
+
+        if($event->other['enrol'] != 'database') {
+            return false;
+        }
+
+        $user = \core_user::get_user($event->relateduserid, '*', MUST_EXIST);
+        $group = local_obu_group_manager_get_all_group($event->courseid);
+
+        groups_add_member($group, $user);
+
+        return true;
+    }
+}

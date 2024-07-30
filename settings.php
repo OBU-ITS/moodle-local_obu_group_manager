@@ -38,4 +38,8 @@ if ($hassiteconfig) {
         get_string('groupnameprefix', 'local_obu_group_manager'),
         get_string('groupnameprefixdesc', 'local_obu_group_manager'),
         '&#9888; (DO NOT EDIT) '));
+    $settings->add(new admin_setting_configcheckbox(
+        'local_obu_group_manager/enableevents',
+        get_string('enableevents', 'local_obu_group_manager'),
+        get_string('enableeventsdescription', 'local_obu_group_manager'), true));
 }

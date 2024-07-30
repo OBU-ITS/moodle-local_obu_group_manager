@@ -27,7 +27,70 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot.'/local/obu_group_manager/lib.php');
+require_once($CFG->libdir . '/grouplib.php');
+require_once($CFG->dirroot . '/group/lib.php');
+
 const SYSTEM_IDENTIFIER = 'obuSys';
+
+/**
+ * Run synchronization process
+ *
+ * @param progress_trace $trace
+ * @param int|null $courseid or null for all courses
+ * @return void
+ */
+function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid = null, $courseendafter = 0) {
+    if ($courseid !== null) {
+        $courseids = [$courseid];
+    } else {
+        $courseids = local_obu_group_manager_get_srs_courses($courseendafter);
+    }
+
+    foreach ($courseids as $courseid) {
+        $parent = get_course($courseid);
+
+        $trace->output($parent->fullname, 1);
+
+        $parentgroupall = local_obu_group_manager_get_all_group($courseid);
+        $parentcurrentenrolments = groups_get_members($parentgroupall->id);
+        foreach ($parentcurrentenrolments as $user) {
+            groups_remove_member($parentgroupall, $user);
+        }
+        $parentdatabaseenrolments = local_obu_metalinking_get_all_database_enrolled_students($courseid);
+        foreach ($parentdatabaseenrolments as $user) {
+            groups_add_member($parentgroupall->id, $user->id, 'local_obu_group_manager');
+        }
+
+        $children = local_obu_metalinking_child_courses($parent->id);
+        foreach ($children as $childid) {
+            $childgroupall = local_obu_group_manager_get_all_group($childid);
+            $childcurrentenrolments = groups_get_members($childgroupall->id);
+            foreach ($childcurrentenrolments as $user) {
+                groups_remove_member($childgroupall, $user);
+            }
+            $childdatabaseenrolments = local_obu_metalinking_get_all_database_enrolled_students($childid);
+            foreach ($childdatabaseenrolments as $user) {
+                groups_add_member($childgroupall->id, $user->id, 'local_obu_group_manager');
+            }
+        }
+    }
+}
+
+function local_obu_group_manager_get_srs_courses($courseendafter) {
+    global $DB;
+
+    $sql = "SELECT DISTINCT course.id
+            FROM {course} course course
+            JOIN {course_categories} cat ON cat.id = course.category AND cat.idnumber LIKE 'SRS%'
+            WHERE course.shortname LIKE '% (%:%)'
+                AND course.idnumber LIKE '%.%'
+                AND course.enddate > ?";
+
+    $courseidobjs = $DB->get_records_sql($sql, array($courseendafter));
+
+    return array_map(function($n) { return $n->id; }, $courseidobjs);
+}
 
 function local_obu_group_manager_get_system_name(string $semester = null, string $set = null) : string
 {
@@ -59,4 +122,17 @@ function local_obu_group_manager_apply_prefix($course, $name) : string {
     }
 
     return $fullname;
+}
+
+
+function local_obu_group_manager_get_all_group($courseid) {
+
+    $course = get_course($courseid);
+    $idnumber = local_obu_group_manager_get_system_idnumber($course->idnumber);
+
+    if(!($group = groups_get_group_by_idnumber($courseid, $idnumber))) {
+        $group = local_obu_group_manager_create_system_group($course, null, $idnumber);
+    }
+
+    return $group;
 }

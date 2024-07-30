@@ -37,3 +37,6 @@ $string['obusysgroupdescdesc'] = 'Text to be given as the enrolment group descri
 
 $string['groupnameprefix'] = 'System Group - Display name prefix';
 $string['groupnameprefixdesc'] = '';
+
+$string['enableevents'] = 'Enable event capture';
+$string['enableeventsdescription'] = 'Toggle to enable the capturing of Moodle events to ensure group for main enrolment';
