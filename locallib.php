@@ -38,14 +38,18 @@ const SYSTEM_IDENTIFIER = 'obuSys';
  *
  * @param progress_trace $trace
  * @param int|null $courseid or null for all courses
+ * @param int|null $courseendafter or null for all courses
  * @return void
  */
 function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid = null, $courseendafter = 0) {
+    
     if ($courseid !== null) {
         $courseids = [$courseid];
     } else {
         $courseids = local_obu_group_manager_get_srs_courses($courseendafter);
     }
+
+    $trace->output(count($courseids), 1);
 
     foreach ($courseids as $courseid) {
         $parent = get_course($courseid);
@@ -53,26 +57,15 @@ function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid
         $trace->output($parent->fullname, 1);
 
         $parentgroupall = local_obu_group_manager_get_all_group($courseid);
+
         $parentcurrentenrolments = groups_get_members($parentgroupall->id);
         foreach ($parentcurrentenrolments as $user) {
             groups_remove_member($parentgroupall, $user);
         }
+
         $parentdatabaseenrolments = local_obu_group_manager_get_all_database_enrolled_students($courseid);
         foreach ($parentdatabaseenrolments as $user) {
             groups_add_member($parentgroupall->id, $user->id, 'local_obu_group_manager');
-        }
-
-        $children = local_obu_metalinking_child_courses($parent->id);
-        foreach ($children as $childid) {
-            $childgroupall = local_obu_group_manager_get_all_group($childid);
-            $childcurrentenrolments = groups_get_members($childgroupall->id);
-            foreach ($childcurrentenrolments as $user) {
-                groups_remove_member($childgroupall, $user);
-            }
-            $childdatabaseenrolments = local_obu_group_manager_get_all_database_enrolled_students($childid);
-            foreach ($childdatabaseenrolments as $user) {
-                groups_add_member($childgroupall->id, $user->id, 'local_obu_group_manager');
-            }
         }
     }
 }
