@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,18 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info
+ * Plugin event observers
  *
  * @package    local_obu_group_manager
- * @author     Joe Souch
- * @copyright  2024, Oxford Brookes University {@link http://www.brookes.ac.uk/}
+ * @copyright  2024 Joe Souch
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_obu_group_manager';
-$plugin->version = 2024073101;
-$plugin->requires = 2015111604;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->release = 'v1.1.1';
+$observers = [
+    [
+        'eventname' => '\core\event\user_enrolment_created',
+        'callback'  => 'local_obu_group_manager_observer::user_enrolment_created',
+    ],
+];

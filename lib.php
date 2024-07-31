@@ -51,7 +51,8 @@ function local_obu_group_manager_create_system_group($courseorid,
 
     if (!($group = $DB->get_record('groups', ['courseid' => $course->id, 'idnumber' => $idnumber]))) {
         $group->courseid = $course->id;
-        $group->name = $name ?? local_obu_group_manager_get_system_name($course->shortname, $semester, $set);
+        $groupname = $name ?? local_obu_group_manager_get_system_name($semester, $set);
+        $group->name = local_obu_group_manager_apply_prefix($course, $groupname);
         $group->idnumber = $idnumber;
         $group->id = groups_create_group($group);
 

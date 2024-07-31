@@ -35,4 +35,8 @@ $string['groupingname'] = 'OBU System';
 $string['obusysgroupdescname'] = 'System Group - Description';
 $string['obusysgroupdescdesc'] = 'Text to be given as the enrolment group description for system generated groups.';
 
+$string['groupnameprefix'] = 'System Group - Display name prefix';
+$string['groupnameprefixdesc'] = '';
 
+$string['enableevents'] = 'Enable event capture';
+$string['enableeventsdescription'] = 'Toggle to enable the capturing of Moodle events to ensure group for main enrolment';

@@ -16,18 +16,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version info
+ * OBU Application - Database upgrade
  *
- * @package    local_obu_group_manager
+ * @package    obu_group_manager
+ * @category   local
  * @author     Joe Souch
- * @copyright  2024, Oxford Brookes University {@link http://www.brookes.ac.uk/}
+ * @copyright  2024, Oxford Brookes University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
  */
+global $CFG;
 
-defined('MOODLE_INTERNAL') || die();
+function xmldb_local_obu_group_manager_upgrade($oldversion = 0) {
+    global $DB;
+    $dbman = $DB->get_manager();
 
-$plugin->component = 'local_obu_group_manager';
-$plugin->version = 2024073101;
-$plugin->requires = 2015111604;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->release = 'v1.1.1';
+    $result = true;
+
+    if ($oldversion < 2024072901) {
+        $sql = "UPDATE {groups}
+                SET name = CONCAT('⚠ (DO NOT EDIT) ', name)
+                WHERE idnumber LIKE 'obuSys.%'
+                    AND name not like '⚠ (DO NOT EDIT) %'";
+
+        $DB->execute($sql);
+
+        upgrade_plugin_savepoint(true, 2024072901, 'local', 'obu_group_manager');
+    }
+
+    return $result;
+}
