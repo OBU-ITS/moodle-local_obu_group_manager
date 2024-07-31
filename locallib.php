@@ -48,7 +48,11 @@ function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid
         $courseids = local_obu_group_manager_get_srs_courses($courseendafter);
     }
 
-    $trace->output(count($courseids), 1);
+    $coursescount = count($courseids);
+    $trace->output("Total courses: $coursescount", 1);
+
+    $starttime = time();
+    $trace->output("Start at: $starttime", 1);
 
     foreach ($courseids as $courseid) {
         $parent = get_course($courseid);
@@ -58,15 +62,27 @@ function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid
         $parentgroupall = local_obu_group_manager_get_all_group($courseid);
 
         $parentcurrentenrolments = groups_get_members($parentgroupall->id);
+        $mappedcurrent = array_combine(array_column($parentcurrentenrolments, 'id'), $parentcurrentenrolments);
+        $parentdatabaseenrolments = local_obu_group_manager_get_all_database_enrolled_students($courseid);
+        $mappeddatabase = array_combine(array_column($parentcurrentenrolments, 'id'), $parentcurrentenrolments);
+
         foreach ($parentcurrentenrolments as $user) {
-            groups_remove_member($parentgroupall, $user);
+            if(!array_key_exists($user->id, $mappeddatabase)) {
+                groups_remove_member($parentgroupall, $user);
+            }
         }
 
-        $parentdatabaseenrolments = local_obu_group_manager_get_all_database_enrolled_students($courseid);
         foreach ($parentdatabaseenrolments as $user) {
-            groups_add_member($parentgroupall->id, $user->id, 'local_obu_group_manager');
+            if(!array_key_exists($user->id, $mappedcurrent)) {
+                groups_add_member($parentgroupall->id, $user->id, 'local_obu_group_manager');
+            }
         }
     }
+
+    $endtime = time();
+    $trace->output("End at: $endtime", 1);
+    $duration = $endtime - $starttime;
+    $trace->output("Duration: $duration", 1);
 }
 
 function local_obu_group_manager_get_srs_courses($courseendafter) {

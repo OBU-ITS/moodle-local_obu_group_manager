@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,19 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+
 /**
- * Version info
+ * Adhoc task to perform group synchronization
  *
  * @package    local_obu_group_manager
- * @author     Joe Souch
- * @copyright  2024, Oxford Brookes University {@link http://www.brookes.ac.uk/}
+ * @copyright  2024 Joe Souch
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_obu_group_manager\task;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_obu_group_manager';
-$plugin->version = 2024073101;
-$plugin->requires = 2015111604;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->release = 'v1.1.1';
+global $CFG;
+require_once($CFG->dirroot . '/local/obu_group_manager/locallib.php');
+
+class synchronise extends \core\task\adhoc_task {
+
+    public function execute() {
+        $endafter = get_course($this->get_custom_data()->endafter);
+        $endafter = get_course($this->get_custom_data()->endafter);
+
+        $trace = new \text_progress_trace();
+        local_obu_group_manager_all_group_sync($trace, null, $endafter);
+        $trace->finished();
+    }
+}

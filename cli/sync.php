@@ -59,10 +59,10 @@ Options:
 Example:
 \$ sudo -u www-data /usr/bin/php local/obu_group_manager/cli/sync.php
 \$ sudo -u www-data /usr/bin/php /var/www/poodle/moodle/local/obu_group_manager/cli/sync.php
-\$ sudo -u www-data /usr/bin/php local/obu_group_manager/cli/sync.php -c=7 -e=1722294000
+\$ sudo -u www-data /usr/bin/php local/obu_group_manager/cli/sync.php -c=7 -e=1725192000
 
 Windows
-\$ php local/obu_group_manager/cli/sync.php -e=1722294000
+\$ php local/obu_group_manager/cli/sync.php -e=1725192000
 ";
 
     echo $help;

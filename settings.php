@@ -25,9 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+global $CFG, $ADMIN;
+
 if ($hassiteconfig) {
-    $settings = new admin_settingpage(get_string('pluginname', 'local_obu_group_manager'), get_string('plugintitle', 'local_obu_group_manager'));
-    $ADMIN->add('localplugins', $settings);
+    $settingscat = new admin_category('groupmanagertasks', get_string('plugintitle', 'local_obu_group_manager'));
+
+    $settings = new admin_settingpage(get_string('pluginname', 'local_obu_group_manager'), 'Settings');
     $settings->add(new admin_setting_configtextarea(
         'local_obu_group_manager/obusys_group_desc',
         get_string('obusysgroupdescname', 'local_obu_group_manager'),
@@ -42,4 +45,17 @@ if ($hassiteconfig) {
         'local_obu_group_manager/enableevents',
         get_string('enableevents', 'local_obu_group_manager'),
         get_string('enableeventsdescription', 'local_obu_group_manager'), true));
+
+    $settingscat->add('groupmanagertasks', $settings);
+
+    $settingscat->add('groupmanagertasks', new admin_externalpage(
+        'groupmanagertaskssync',
+        'Sync all All Group',
+        "$CFG->wwwroot/local/obu_group_manager/tools/syncallgroup.php"));
+    $settingscat->add('groupmanagertasks', new admin_externalpage(
+        'groupmanagertaskssynccourse',
+        'Sync course All Group',
+        "$CFG->wwwroot/local/obu_group_manager/tools/syncallgroupbycourse.php"));
+
+    $ADMIN->add('localplugins', $settingscat);
 }
