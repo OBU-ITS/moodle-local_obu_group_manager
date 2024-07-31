@@ -36,7 +36,8 @@ function reSyncAllGroup($courseid) {
 $mform = new syncallgroup_form();
 
 if ($data = $mform->get_data()) {
-    reSyncAllGroup($data->courseid);
+    $datacourseid = (int)$data->courseid;
+    reSyncAllGroup($datacourseid);
 
     \core\notification::info("Ad hoc task created");
 
