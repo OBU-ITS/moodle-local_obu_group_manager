@@ -63,8 +63,9 @@ function local_obu_group_manager_all_group_sync(progress_trace $trace, $courseid
 
         $parentcurrentenrolments = groups_get_members($parentgroupall->id);
         $mappedcurrent = array_combine(array_column($parentcurrentenrolments, 'id'), $parentcurrentenrolments);
+
         $parentdatabaseenrolments = local_obu_group_manager_get_all_database_enrolled_students($courseid);
-        $mappeddatabase = array_combine(array_column($parentcurrentenrolments, 'id'), $parentcurrentenrolments);
+        $mappeddatabase = array_combine(array_column($parentdatabaseenrolments, 'id'), $parentdatabaseenrolments);
 
         foreach ($parentcurrentenrolments as $user) {
             if(!array_key_exists($user->id, $mappeddatabase)) {
