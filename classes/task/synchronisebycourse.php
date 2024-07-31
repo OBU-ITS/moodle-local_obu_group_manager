@@ -32,7 +32,7 @@ require_once($CFG->dirroot . '/local/obu_group_manager/locallib.php');
 class synchronisebycourse extends \core\task\adhoc_task {
 
     public function execute() {
-        $courseid = get_course($this->get_custom_data()->courseid);
+        $courseid = $this->get_custom_data()->courseid;
 
         $trace = new \text_progress_trace();
         local_obu_group_manager_all_group_sync($trace, $courseid);
