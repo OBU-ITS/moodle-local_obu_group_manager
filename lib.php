@@ -37,7 +37,8 @@ function local_obu_group_manager_create_system_group($courseorid,
                                                      string $name = null,
                                                      string $idnumber = null,
                                                      string $semester = null,
-                                                     string $set = null) {
+                                                     string $set = null,
+                                                     $hostcourse = null) {
     global $DB;
 
     if((isset($semester) || isset($set)) && !(isset($semester) && isset($set))) {
@@ -45,12 +46,13 @@ function local_obu_group_manager_create_system_group($courseorid,
     }
 
     $course = is_object($courseorid) ? $courseorid : get_course($courseorid);
+    $teachingcourse = $hostcourse ?? $course;
 
     $idnumber = $idnumber ?? local_obu_group_manager_get_system_idnumber($course->idnumber, $semester, $set);
     $idnumber = trim($idnumber);
 
-    if (!($group = $DB->get_record('groups', ['courseid' => $course->id, 'idnumber' => $idnumber]))) {
-        $group->courseid = $course->id;
+    if (!($group = $DB->get_record('groups', ['courseid' => $teachingcourse->id, 'idnumber' => $idnumber]))) {
+        $group->courseid = $teachingcourse->id;
         $groupname = $name ?? local_obu_group_manager_get_system_name($semester, $set);
         $group->name = local_obu_group_manager_apply_prefix($course, $groupname);
         $group->idnumber = $idnumber;

@@ -26,6 +26,7 @@
  *
  */
 global $CFG;
+require_once($CFG->dirroot.'/group/lib.php');
 
 function xmldb_local_obu_group_manager_upgrade($oldversion = 0) {
     global $DB;
@@ -42,6 +43,23 @@ function xmldb_local_obu_group_manager_upgrade($oldversion = 0) {
         $DB->execute($sql);
 
         upgrade_plugin_savepoint(true, 2024072901, 'local', 'obu_group_manager');
+    }
+
+    if ($oldversion < 2024081201) {
+        $sql = "SELECT g.id
+                FROM {groups} g
+                JOIN {course} c ON c.id = g.courseid
+                JOIN {course_categories} cat ON cat.id = c.category AND cat.idnumber NOT LIKE 'SRS%'
+                WHERE g.idnumber LIKE 'obuSys.%' 
+                AND c.shortname LIKE '% (%:%)'
+                AND c.idnumber LIKE '%.%'";
+
+        $groups = $DB->get_records_sql($sql);
+        foreach($groups as $group) {
+            groups_delete_group($group->id);
+        }
+
+        upgrade_plugin_savepoint(true, 2024081201, 'local', 'obu_group_manager');
     }
 
     return $result;
