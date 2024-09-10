@@ -125,12 +125,19 @@ function local_obu_group_manager_get_system_idnumber(string $courseidnumber, str
 function local_obu_group_manager_apply_prefix($course, $name) : string {
     $prefix = get_config('local_obu_group_manager', 'obusys_group_name_prefix');
 
-    $fullname = $prefix . $course->shortname;
-    if(!empty($name)) {
-        $fullname .= " - $name";
+    if (empty($name)) {
+        return $prefix . $course->shortname;
     }
 
-    return $fullname;
+    if (strpos($name, $prefix) === 0) {
+        return $name;
+    }
+
+    if (strpos($name, $course->shortname) === 0) {
+        return $prefix . $name;
+    }
+
+    return $prefix . $course->shortname . ' - ' . $name;
 }
 
 
