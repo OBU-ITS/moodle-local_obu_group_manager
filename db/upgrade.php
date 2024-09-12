@@ -63,5 +63,17 @@ function xmldb_local_obu_group_manager_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, 2024081202, 'local', 'obu_group_manager');
     }
 
+    if ($oldversion < 2024091001) {
+        $sql = "UPDATE {groups}
+                SET name = SUBSTRING(name, 
+                    LOCATE('⚠ (DO NOT EDIT)', name, LOCATE('⚠ (DO NOT EDIT)', name) + 1)
+                )
+                WHERE name LIKE '%⚠ (DO NOT EDIT)%⚠ (DO NOT EDIT)%'";
+
+        $DB->execute($sql);
+
+        upgrade_plugin_savepoint(true, 2024091001, 'local', 'obu_group_manager');
+    }
+
     return $result;
 }
