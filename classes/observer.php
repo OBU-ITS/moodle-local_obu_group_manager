@@ -26,6 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG, $DB;
 
+require_once($CFG->dirroot . '/local/obu_group_manager/locallib.php');
+
 class local_obu_group_manager_observer {
 
     /**
