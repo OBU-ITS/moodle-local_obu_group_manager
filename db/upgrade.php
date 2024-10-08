@@ -77,9 +77,9 @@ function xmldb_local_obu_group_manager_upgrade($oldversion = 0) {
 
 
     if ($oldversion < 2024100302) {
-        $prefix = get_config('local_obu_group_manager', 'obusys_group_name_prefix');
-        $prefix = str_replace(array('&#9888; ', '⚠ '), '', $prefix);
-        set_config('obusys_group_name_prefix', $prefix, 'local_obu_group_manager');
+//        $prefix = get_config('local_obu_group_manager', 'obusys_group_name_prefix');
+//        $prefix = str_replace(array('&#9888; ', '⚠ '), '', $prefix);
+//        set_config('obusys_group_name_prefix', $prefix, 'local_obu_group_manager');
 
         $sql1 = "UPDATE {groups}
                 SET name = REPLACE(REPLACE(name, '&#9888; ', ''), '⚠ ', '')
