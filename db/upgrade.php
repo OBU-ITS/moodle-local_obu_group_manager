@@ -81,20 +81,20 @@ function xmldb_local_obu_group_manager_upgrade($oldversion = 0) {
         $prefix = str_replace(array('&#9888; ', '⚠ '), '', $prefix);
         set_config('obusys_group_name_prefix', $prefix, 'local_obu_group_manager');
 
-        $sql = "UPDATE {groups}
+        $sql1 = "UPDATE {groups}
                 SET name = REPLACE(REPLACE(name, '&#9888; ', ''), '⚠ ', '')
                 WHERE name LIKE '%&#9888;%'
                    OR name LIKE '%⚠%';";
 
-        $DB->execute($sql);
+        $DB->execute($sql1);
 
-        $sql = "UPDATE {groups}
+        $sql2 = "UPDATE {groups}
                 SET name = SUBSTRING(name, 
                     LOCATE('(DO NOT EDIT)', name, LOCATE('(DO NOT EDIT)', name) + 1)
                 )
                 WHERE name LIKE '%(DO NOT EDIT)%(DO NOT EDIT)%'";
 
-        $DB->execute($sql);
+        $DB->execute($sql2);
 
         upgrade_plugin_savepoint(true, 2024100302, 'local', 'obu_group_manager');
     }
