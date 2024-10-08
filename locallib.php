@@ -133,10 +133,6 @@ function local_obu_group_manager_apply_prefix($course, $name) : string {
         return $name;
     }
 
-    if (strpos(ltrim($name, '&#98;⚠'), ltrim($prefix, '&#98;⚠')) === 0) {
-        return $name;
-    }
-
     if (strpos($name, $course->shortname) === 0) {
         return $prefix . $name;
     }
