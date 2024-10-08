@@ -82,9 +82,9 @@ function xmldb_local_obu_group_manager_upgrade($oldversion = 0) {
         set_config('obusys_group_name_prefix', $prefix, 'local_obu_group_manager');
 
         $sql = "UPDATE {groups}
-                SET name = REPLACE(REPLACE(name, '&#9888; ', ''), '⚠ ', '')
-                WHERE name LIKE '%&#9888;%'
-                   OR name LIKE '%⚠%'";
+                SET name = REPLACE(REPLACE(name, CONCAT('&#9888', CHAR(59)), ''), '⚠ ', '')
+                WHERE name LIKE '%&#9888%' OR name LIKE '%⚠%'";
+
 
         $DB->execute($sql);
 
