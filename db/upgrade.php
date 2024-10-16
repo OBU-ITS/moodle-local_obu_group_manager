@@ -75,5 +75,29 @@ function xmldb_local_obu_group_manager_upgrade($oldversion = 0) {
         upgrade_plugin_savepoint(true, 2024091001, 'local', 'obu_group_manager');
     }
 
+
+    if ($oldversion < 2024100302) {
+        $prefix = get_config('local_obu_group_manager', 'obusys_group_name_prefix');
+        $prefix = str_replace(array('&#9888; ', '⚠ '), '', $prefix);
+        set_config('obusys_group_name_prefix', $prefix, 'local_obu_group_manager');
+
+        $sql = "UPDATE {groups}
+                SET name = REPLACE(REPLACE(name, CONCAT('&#9888', CHAR(59)), ''), '⚠ ', '')
+                WHERE name LIKE '%&#9888%' OR name LIKE '%⚠%'";
+
+
+        $DB->execute($sql);
+
+        $sql = "UPDATE {groups}
+                SET name = SUBSTRING(name, 
+                    LOCATE('(DO NOT EDIT)', name, LOCATE('(DO NOT EDIT)', name) + 1)
+                )
+                WHERE name LIKE '%(DO NOT EDIT)%(DO NOT EDIT)%'";
+
+        $DB->execute($sql);
+
+        upgrade_plugin_savepoint(true, 2024100302, 'local', 'obu_group_manager');
+    }
+
     return $result;
 }

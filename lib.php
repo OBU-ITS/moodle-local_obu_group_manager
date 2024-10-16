@@ -87,3 +87,7 @@ function local_obu_group_manager_is_system_group($idnumber) : bool {
     return (substr( $idnumber, 0, 6 ) === SYSTEM_IDENTIFIER)
         or preg_match("/^\d{4}\..+?_.+?_\d+_\d{6}_\d+_.+?-\d+_\d+_.{1,2}$/", $idnumber);
 }
+
+function local_obu_group_manager_get_idnumber_prefix($courseidnumber) : string {
+    return local_obu_group_manager_get_system_idnumber($courseidnumber);
+}
