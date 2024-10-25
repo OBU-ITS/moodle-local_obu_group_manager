@@ -7,6 +7,11 @@ require('../../../config.php');
 
 global $CFG;
 
+if (!is_siteadmin()) {
+    redirect(new \moodle_url('/'));
+    die();
+}
+
 $courseid = required_param('courseid', PARAM_INT);
 $parentid = required_param('parentid', PARAM_INT);
 
