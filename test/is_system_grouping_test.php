@@ -16,5 +16,5 @@ $idnumber = required_param('idnumber', PARAM_TEXT);
 
 $trace = new \html_progress_trace();
 $response = local_obu_group_manager_is_system_grouping($idnumber);
-$trace->output("Is '$idnumber' a grouping idnumber:");
+$trace->output(sprintf("Is '$idnumber' a grouping idnumber: %s", $response ? "True" : "False"));
 $trace->finished();
