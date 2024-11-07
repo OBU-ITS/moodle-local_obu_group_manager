@@ -83,6 +83,10 @@ function local_obu_group_manager_link_system_grouping($group) : bool {
     return true;
 }
 
+function local_obu_group_manager_is_system_grouping($idnumber) : bool {
+    return ($idnumber === SYSTEM_IDENTIFIER);
+}
+
 function local_obu_group_manager_is_system_group($idnumber) : bool {
     return (substr( $idnumber, 0, 6 ) === SYSTEM_IDENTIFIER)
         or preg_match("/^\d{4}\..+?_.+?_\d+_\d{6}_\d+_.+?-\d+_\d+_.{1,2}$/", $idnumber);
